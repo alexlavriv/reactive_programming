@@ -73,20 +73,21 @@ morse_code = {
     '9': '--- --- --- --- .',
     '0': '--- --- --- --- ---'
 }
-
-
+space = ' '
+char_space = 3 * space
+word_space = 7 * space
 inverted_morse_code = {v: k for k, v in morse_code.items()}
 
 
 def encrypt_morse_code(plaintext):
-    return "   ".join((morse_code[char] for char in plaintext))
+    return char_space.join((morse_code[char] for char in plaintext))
 
 
 def decrypt_morse_code(ciphertext):
-    return "".join((inverted_morse_code[morse_char] for morse_char in make_morse_list(ciphertext)))
+    return space.join(decrypt_morse_word(word) for word in make_morse_list(ciphertext))
 
 
-# Helper function
+############################### Helper functions ##########################################
 def right_shift(char, shift):
     shift = shift % 26
     if ord(char) < ord('A') or ord(char) > ord('Z'):
@@ -112,10 +113,16 @@ def repeat_or_trim(keyword, text_length):
 
 
 def make_morse_list(morsetext):
-    a = morsetext.split("       ")
+    morse_words = morsetext.split(word_space)
+    morse_chars = [word.split(char_space) for word in morse_words]
+    return morse_chars
 
+def decrypt_morse_word(morse_word):
+    decrypted_word = ''.join((inverted_morse_code[morse_char] for morse_char in morse_word))
+    return decrypted_word
 
 def main():
+
     # cipher = encrypt_caesar_cipher("PYTHON")
     # cipher2 = encrypt_caesar_cipher("F1RST P0ST")
     # print(cipher)
@@ -134,12 +141,10 @@ def main():
 
     cipher4 = encrypt_morse_code("MEET ME AT MIDNIGHT")
     print(cipher4)
-    # decrypted4 = decrypt_morse_code(cipher4)
-    # print(decrypted4)
+    print(make_morse_list(cipher4))
+    decrypted4 = decrypt_morse_code(cipher4)
+    print(decrypted4)
 
-    t = "ban   ana"
-    y = t.split("   ")
-    print(y)
 
 if __name__ == '__main__':
     main()
