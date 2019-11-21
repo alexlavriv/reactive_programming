@@ -1,4 +1,3 @@
-
 # 2.1 Caesar
 def encrypt_caesar_cipher(plaintext):
     if plaintext:
@@ -88,6 +87,7 @@ def decrypt_morse_code(ciphertext):
 
 
 ############################### Helper functions ##########################################
+
 def right_shift(char, shift):
     shift = shift % 26
     if ord(char) < ord('A') or ord(char) > ord('Z'):
@@ -117,12 +117,13 @@ def make_morse_list(morsetext):
     morse_chars = [word.split(char_space) for word in morse_words]
     return morse_chars
 
+
 def decrypt_morse_word(morse_word):
     decrypted_word = ''.join((inverted_morse_code[morse_char] for morse_char in morse_word))
     return decrypted_word
 
-def main():
 
+def main():
     # cipher = encrypt_caesar_cipher("PYTHON")
     # cipher2 = encrypt_caesar_cipher("F1RST P0ST")
     # print(cipher)
