@@ -65,7 +65,10 @@ def statistics(aggregate_function, data, property=None):
 def main():
 
     recipes = search("openrecipes.json",'Pork', '+garlic', '-Herbs', '-fdjdsjf')
-    print(statistics(len, recipes, property='recipeYield'))
+    print(statistics(sum_strings, recipes, property='recipeYield'))
 
+
+def sum_strings (lst):
+    return sum([int(t) for t in lst])
 if __name__ == '__main__':
     main()
