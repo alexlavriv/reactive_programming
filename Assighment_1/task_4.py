@@ -7,6 +7,8 @@ def line_reader_generator(file_name):
             data = file.readline()
             if data:
                 yield json.loads(data)
+            else:
+                return False
 
 def prepare_string(text):
     for ch in ['!','#',',','.','&']:
@@ -34,6 +36,8 @@ def join_recipe(recipe):
     return joined_str
 
 def filter_(recipe, keywords, includes, excludes):
+
+
     recipe_str = join_recipe(recipe) 
     ings = prepare_string(recipe["ingredients"])
     
@@ -45,18 +49,23 @@ def filter_(recipe, keywords, includes, excludes):
     return False
 
 
-def search(file_name, *args):
+def search(file_name,*args):
     reader = line_reader_generator(file_name)
     keywords, includes, excludes = filter_parser(args)
     for recipe in reader:
         if filter_(recipe, keywords, includes, excludes):
             yield recipe
-
+#res = statistics(count, search('openrecipes.txt', 'eggs',  '+eggs', '-milk', '-rice'), property=None)
+def statistics(aggregate_function, data, property=None):
+    if property==None:
+        return aggregate_function ([current for current in data])
+    else:
+        return aggregate_function ([current[property] for current in data])
 
 def main():
-    recipes = search("openrecipes.json", 'Pasta', '+Garlic', '-rice')
-    print (next(recipes))
 
+    recipes = search("openrecipes.json",'Pork', '+garlic', '-Herbs', '-fdjdsjf')
+    print(statistics(sum, recipes, property='recipeYield'))
 
 if __name__ == '__main__':
     main()
