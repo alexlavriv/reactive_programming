@@ -8,37 +8,41 @@ def line_reader_generator(file_name):
             if data:
                 yield json.loads(data)
 
+def prepare_string(text):
+    for ch in ['!','#',',','.','&']:
+        if ch in text:
+            text = text.replace(ch," ")
+    return text.lower()    
+
 
 def filter_parser(*args):
     keywords, includes, excludes = [], [], []
-    for parsed in args:
-        if parsed[0] == '-':
-            excludes.append(parsed)
-        elif parsed[0] == '+':
-            includes.append(parsed)
+    for parsed in args[0]:
+        if parsed.startswith('-'):
+            excludes.append(parsed[1:].lower())
+        elif parsed.startswith('+'):
+            includes.append(parsed[1:].lower())
         else:
-            keywords.append(parsed)
-    print(keywords, includes, excludes)
+            keywords.append(parsed.lower())
+
     return keywords, includes, excludes
 
+# This function will join all the field to one string
+def join_recipe(recipe):
+    joined_str = prepare_string(' '.join(val for val in recipe.values()))
+
+    return joined_str
 
 def filter_(recipe, keywords, includes, excludes):
-    flag = True
-    while flag:
-        for keyword in keywords:
-            # print(recipe.values())
-            if keyword not in recipe.values():
-                flag = False
-                break
-        # for include_ingredient, exclude_ingredient in zip(includes, excludes):
-        # for include_ingredient in includes:
-        #     # print(recipe['ingredients'])
-        #     if include_ingredient not in recipe['ingredients']:
-        #         flag = False
-        #         break
-        # print('out')
-    print('ret')
-    return flag
+    recipe_str = join_recipe(recipe) 
+    ings = prepare_string(recipe["ingredients"])
+    
+    if (all(keyword in recipe_str for keyword in keywords) and
+         all(include in ings for include in includes) and
+          not any(exlclude in ings for exlclude in excludes)):
+        return True
+
+    return False
 
 
 def search(file_name, *args):
@@ -50,8 +54,8 @@ def search(file_name, *args):
 
 
 def main():
-    recipes = search("openrecipes.txt", 'eggs', '+eggs', '-milk', '-rice')
-    next(recipes)
+    recipes = search("openrecipes.json", 'Pasta', '+Garlic', '-rice')
+    print (next(recipes))
 
 
 if __name__ == '__main__':

@@ -17,10 +17,10 @@ def line_reader_generator(file_name):
 
 
 def main():
-    reader = line_reader_generator("openrecipes.txt")
-    for _ in range(100):
-        for x in next(reader).values() :
-            print(x)
+    reader = line_reader_generator("openrecipes.json")
+    for _ in range(1):
+        for key,value in next(reader).items():
+            print('%s: %s'%(key,value))
 
 
 if __name__ == '__main__':
